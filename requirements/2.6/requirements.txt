@@ -1,16 +1,16 @@
-Django==1.5.1
+Django==2.2.24
 Markdown==2.3.1
 argparse==1.2.1
-django-filter==0.6
-django-jsonfield==0.9.10
-djangorestframework==2.3.12
-requests==1.2.3
+django-filter==2.4.0
+django-jsonfield==1.0.1
+djangorestframework==3.11.2
+requests==2.20
 wsgiref==0.1.2
-sqlalchemy==0.8.3
+sqlalchemy==1.2.18
 alembic==0.6.3
 supervisor
 django-nose==1.2
-Sphinx==1.1.3
+Sphinx==3.0.4
 psycogreen==1.0
 psycopg2==2.5.2
 manhole==0.6.0
@@ -22,7 +22,7 @@ importlib==1.0.1
 https://bitbucket.org/megies/flake8-1/get/422dc5e.tar.gz
 nose==1.3.0
 mock==1.0.1
-psutil==2.0.0
+psutil==5.6.7
 
 # Gevent 1.0.x requires cython but doesn't do a good job of depending on it
 cython==0.19.2
