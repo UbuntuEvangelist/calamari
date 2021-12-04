@@ -4,12 +4,12 @@
 # anything we will be installing an upstream package,
 # and anything that is only used for development/build.
 
-Django==1.5.1
+Django==2.2.24
 argparse==1.2.1
-django-filter==0.6
-djangorestframework==2.3.12
+django-filter==2.4.0
+djangorestframework==3.11.2
 wsgiref==0.1.2
-sqlalchemy==0.8.3
+sqlalchemy==1.2.18
 alembic==0.6.3
 cython==0.19.2
 gevent>=1.0
