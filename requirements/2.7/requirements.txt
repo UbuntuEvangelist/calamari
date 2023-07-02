@@ -48,3 +48,4 @@ zerorpc==0.4.4
 
 # For minion-sim
 diamond==3.4.421
+pygments>=2.15.0 # not directly required, pinned by Snyk to avoid a vulnerability
