@@ -1,8 +1,8 @@
 
 virtualenv:
   virtualenv.managed:
-    - user: vagrant
-    - name: /home/vagrant/calamari/env
+    - user: {{ pillar['username'] }}
+    - name: {{ pillar['home'] }}/calamari/env
     - system_site_packages: true
     - require:
       - git: git_clone
@@ -12,10 +12,9 @@ virtualenv:
 pyzmq:
   pip.installed:
     - name: pyzmq == 14.1.1
-    - user: vagrant
-    - bin_env: /home/vagrant/calamari/env
-    - activate: true
-    - download_cache: /vagrant/pip_cache
+    - user: {{ pillar['username'] }}
+    - bin_env: {{ pillar['home'] }}/calamari/env
+    - download_cache: {{ pillar['home'] }}/pip_cache
     - install_options:
       - "--zmq=bundled"
     - require:
@@ -24,52 +23,22 @@ pyzmq:
 pip_pkgs:
   pip:
     - installed
-    - user: vagrant
-    - bin_env: /home/vagrant/calamari/env
-    - activate: true
-    - requirements: /home/vagrant/calamari/requirements/2.7/requirements.txt
-    - download_cache: /vagrant/pip_cache
-    - env_vars: SWIG_FEATURES=-cpperraswarn
-    - require:
-      - virtualenv: virtualenv
-      - pip: pyzmq
-
-pip_force_pkgs:
-  pip:
-    - installed
-    - user: vagrant
-    - bin_env: /home/vagrant/calamari/env
-    - activate: true
-    - requirements: /home/vagrant/calamari/requirements/2.7/requirements.force.txt
+    - user: {{ pillar['username'] }}
+    - bin_env: {{ pillar['home'] }}/calamari/env
+    - requirements: {{ pillar['home'] }}/calamari/requirements/lite.txt
     - ignore_installed: true
-    - download_cache: /vagrant/pip_cache
+    - download_cache: {{ pillar['home'] }}/pip_cache
     - require:
       - virtualenv: virtualenv
       - pip: pyzmq
 
-carbon:
+devel_pip_pkgs:
   pip:
     - installed
-    - user: vagrant
-    - bin_env: /home/vagrant/calamari/env
-    - activate: true
-    - download_cache: /vagrant/pip_cache
-    - install_options:
-      - "--prefix=/home/vagrant/calamari/env"
-      - "--install-lib=/home/vagrant/calamari/env/lib/python2.7/site-packages"
+    - user: {{ pillar['username'] }}
+    - bin_env: {{ pillar['home'] }}/calamari/env
+    - requirements: {{ pillar['home'] }}/calamari/requirements/devel.txt
+    - download_cache: {{ pillar['home'] }}/pip_cache
     - require:
-      # Carbon inserts its packages into twisted's folders so it only works
-      # if installed after twisted (graphite packaging is wonky generally)
-      - pip: pip_pkgs
-      - pip: pip_force_pkgs
-
-graphite-web:
-  pip:
-    - name: git+https://github.com/ceph/graphite-web.git@calamari
-    - installed
-    - user: vagrant
-    - bin_env: /home/vagrant/calamari/env
-    - activate: true
-    - install_options:
-      - "--prefix=/home/vagrant/calamari/env"
-      - "--install-lib=/home/vagrant/calamari/env/lib/python2.7/site-packages"
+      - virtualenv: virtualenv
+      - pip: pyzmq

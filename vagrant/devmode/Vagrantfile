@@ -5,16 +5,42 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.box = "boxcutter/ubuntu1404"
+
+  config.vm.provider "vmware_fusion" do |v|
+    v.vmx["memsize"] = "1024"
+  end
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+  end
 
   # Use a bridged network so that external Ceph servers can connect to
   # salt master on this VM.
-  config.vm.network "public_network"
+  config.vm.network "public_network", bridge: [
+    "en0: Wi-Fi (AirPort)",  # without this `vagrant up` will pause for interface selection
+  ]
 
+  config.vm.hostname = 'vagrant-ubuntu-trusty-64'
   config.vm.synced_folder "../../", "/calamari.git"
   config.vm.synced_folder "salt/roots/", "/srv/salt/"
-  config.vm.provision "shell",
-    inline: "/bin/bash /calamari.git/vps_bootstrap.sh"
+  config.vm.provision "shell" do |s|
+    s.path = "../../vps_bootstrap.sh"
+    s.args = ['vagrant', '/home/vagrant']
+  end
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+    provider.token = ENV['DIGITAL_OCEAN_API_TOKEN']
+    provider.image = 'ubuntu-14-04-x64'
+    provider.region = 'nyc1'
+    provider.size = '2gb'
+  end
+  config.vm.provision "nightly", type: "shell" do |s|
+    s.path = "../../vps_bootstrap.sh"
+    s.args = ['root', '/root']
+  end
 
 end

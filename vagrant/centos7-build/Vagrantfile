@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+config.vm.box = "centos/7"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+  end
+
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//git", "1"]
+  end
+
+  config.vm.synced_folder "../../../", "/git"
+  config.vm.synced_folder "salt/roots/", "/srv/salt/"
+  config.vm.provision :salt do |salt|
+    salt.bootstrap_options = "-F -c /tmp -P"
+    salt.minion_config = "salt/minion"
+    salt.run_highstate = false
+  end
+  # Use a bridged network so that external Ceph servers can connect to
+  # salt master on this VM.
+  config.vm.network "public_network", bridge: [
+    "en0: Wi-Fi (AirPort)",  # without this `vagrant up` will pause for interface selection
+  ]
+
+  config.vm.hostname = 'vagrant-centos-7'
+end
