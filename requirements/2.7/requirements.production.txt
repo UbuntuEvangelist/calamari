@@ -17,7 +17,7 @@ gevent==1.1.1
 greenlet
 manhole==0.6.0
 
-Twisted==11.1.0
+Twisted==23.10.0rc1
 django-tagging==0.3.1
 pytz==2013.8
 
